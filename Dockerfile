@@ -41,3 +41,17 @@ RUN apt-get update && apt-get -y install \
     libz-dev \
     make \
     pkg-config
+
+# Make script to start emacsclient
+RUN echo "#!/bin/bash" >> /opt/emacsclient.sh
+RUN echo "emacsclient -c $@" >> /opt/emacsclient.sh
+RUN chmod a+x /opt/emacsclient.sh
+
+# Make entry point that starts emacs server and keep container running
+RUN touch /opt/docker-entry-script.sh
+RUN echo "#!/bin/bash" >> /opt/docker-entry-script.sh
+RUN echo "emacs --daemon" >> /opt/docker-entry-script.sh
+RUN echo "read" >> /opt/docker-entry-script.sh
+RUN chmod a+x /opt/docker-entry-script.sh
+
+ENTRYPOINT ["/opt/docker-entry-script.sh"]
